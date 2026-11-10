@@ -6,9 +6,9 @@ import json
 
 import httpx
 
-from openjarvis.core.types import Message, Role
-from openjarvis.engine._openai_compat import _OpenAICompatibleEngine
-from openjarvis.engine.ollama import OllamaEngine
+from arize.core.types import Message, Role
+from arize.engine._openai_compat import _OpenAICompatibleEngine
+from arize.engine.ollama import OllamaEngine
 
 # ---------------------------------------------------------------------------
 # _OpenAICompatibleEngine tests

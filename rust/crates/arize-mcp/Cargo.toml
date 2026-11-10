@@ -1,0 +1,13 @@
+[package]
+name = "arize-mcp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arize-core = { path = "../arize-core" }
+arize-tools = { path = "../arize-tools" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }

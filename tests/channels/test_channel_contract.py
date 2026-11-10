@@ -11,14 +11,14 @@ import importlib
 
 import pytest
 
-import openjarvis.channels  # noqa: F401 — trigger registration
-from openjarvis.channels._stubs import ChannelStatus
-from openjarvis.core.registry import ChannelRegistry
+import arize.channels  # noqa: F401 — trigger registration
+from arize.channels._stubs import ChannelStatus
+from arize.core.registry import ChannelRegistry
 
 # Collect channel classes at import time (before registry gets cleared).
 # We store the actual class objects, not registry keys, so they survive
 # the autouse _clean_registries fixture.
-importlib.reload(openjarvis.channels)
+importlib.reload(arize.channels)
 _ALL_CHANNELS = [(key, ChannelRegistry.get(key)) for key in ChannelRegistry.keys()]
 
 

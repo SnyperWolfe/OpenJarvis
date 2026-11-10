@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.types import ToolResult
-from openjarvis.skills.executor import SkillExecutor
-from openjarvis.skills.types import SkillManifest, SkillStep
-from openjarvis.tools._stubs import BaseTool, ToolExecutor, ToolSpec
+from arize.core.events import EventBus, EventType
+from arize.core.types import ToolResult
+from arize.skills.executor import SkillExecutor
+from arize.skills.types import SkillManifest, SkillStep
+from arize.tools._stubs import BaseTool, ToolExecutor, ToolSpec
 
 
 class EchoTool(BaseTool):
@@ -270,7 +270,7 @@ class TestSkillExecutorSubSkills:
         )
 
         def resolve_skill(name, context):
-            from openjarvis.skills.executor import SkillResult
+            from arize.skills.executor import SkillResult
 
             if name == "upper_skill":
                 return executor.run(child_manifest, initial_context=context)
@@ -303,7 +303,7 @@ class TestSkillExecutorSubSkills:
         executor = SkillExecutor(tool_executor)
 
         def resolve_skill(name, context):
-            from openjarvis.skills.executor import SkillResult
+            from arize.skills.executor import SkillResult
 
             return SkillResult(skill_name=name, success=False)
 
@@ -323,7 +323,7 @@ class TestSkillExecutorSubSkills:
 
 class TestSkillTool:
     def test_skill_as_tool(self):
-        from openjarvis.skills.tool_adapter import SkillTool
+        from arize.skills.tool_adapter import SkillTool
 
         tools = [EchoTool()]
         tool_executor = ToolExecutor(tools)

@@ -6,11 +6,11 @@ import json
 
 import pytest
 
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.types import ToolCall, ToolResult
-from openjarvis.security.capabilities import DEFAULT_TOOL_CAPABILITIES
-from openjarvis.tools._stubs import BaseTool, ToolExecutor, ToolSpec
-from openjarvis.tools.code_interpreter import CodeInterpreterTool
+from arize.core.events import EventBus, EventType
+from arize.core.types import ToolCall, ToolResult
+from arize.security.capabilities import DEFAULT_TOOL_CAPABILITIES
+from arize.tools._stubs import BaseTool, ToolExecutor, ToolSpec
+from arize.tools.code_interpreter import CodeInterpreterTool
 
 # ---------------------------------------------------------------------------
 # Helpers

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from openjarvis.core.registry import ModelRegistry
-from openjarvis.core.types import ModelSpec
-from openjarvis.intelligence.model_catalog import (
+from arize.core.registry import ModelRegistry
+from arize.core.types import ModelSpec
+from arize.intelligence.model_catalog import (
     BUILTIN_MODELS,
     merge_discovered_models,
     register_builtin_models,

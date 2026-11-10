@@ -4,17 +4,17 @@ from __future__ import annotations
 
 import pytest
 
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.types import ToolResult
-from openjarvis.mcp.protocol import (
+from arize.core.events import EventBus, EventType
+from arize.core.types import ToolResult
+from arize.mcp.protocol import (
     INVALID_PARAMS,
     METHOD_NOT_FOUND,
     MCPRequest,
 )
-from openjarvis.mcp.server import MCPServer
-from openjarvis.tools._stubs import BaseTool, ToolSpec
-from openjarvis.tools.calculator import CalculatorTool
-from openjarvis.tools.think import ThinkTool
+from arize.mcp.server import MCPServer
+from arize.tools._stubs import BaseTool, ToolSpec
+from arize.tools.calculator import CalculatorTool
+from arize.tools.think import ThinkTool
 
 
 class _ProbeTool(BaseTool):
@@ -141,7 +141,7 @@ class TestMCPServer:
         assert "protocolVersion" in result
         assert "capabilities" in result
         assert "serverInfo" in result
-        assert result["serverInfo"]["name"] == "openjarvis"
+        assert result["serverInfo"]["name"] == "arize"
 
     def test_initialize_capabilities(self, server):
         req = MCPRequest(method="initialize", id=1)

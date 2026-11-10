@@ -6,9 +6,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from openjarvis.core.config import CapabilitiesConfig, JarvisConfig, SecurityConfig
-from openjarvis.core.events import EventBus
-from openjarvis.security import SecurityContext, setup_security
+from arize.core.config import ArizeConfig, CapabilitiesConfig, SecurityConfig
+from arize.core.events import EventBus
+from arize.security import SecurityContext, setup_security
 
 
 def _make_mock_engine() -> MagicMock:
@@ -20,8 +20,8 @@ def _make_mock_engine() -> MagicMock:
     return engine
 
 
-def _make_config(*, enabled: bool = True, caps_enabled: bool = False) -> JarvisConfig:
-    cfg = JarvisConfig()
+def _make_config(*, enabled: bool = True, caps_enabled: bool = False) -> ArizeConfig:
+    cfg = ArizeConfig()
     cfg.security = SecurityConfig(
         enabled=enabled,
         secret_scanner=True,
@@ -34,7 +34,7 @@ def _make_config(*, enabled: bool = True, caps_enabled: bool = False) -> JarvisC
 
 def _has_rust() -> bool:
     try:
-        import openjarvis_rust  # noqa: F401
+        import arize_rust  # noqa: F401
 
         return True
     except ImportError:
@@ -44,7 +44,7 @@ def _has_rust() -> bool:
 class TestSetupSecurityEnabled:
     @pytest.mark.skipif(not _has_rust(), reason="Rust extension not compiled")
     def test_returns_wrapped_engine(self) -> None:
-        from openjarvis.security.guardrails import GuardrailsEngine
+        from arize.security.guardrails import GuardrailsEngine
 
         engine = _make_mock_engine()
         bus = EventBus()
@@ -82,7 +82,7 @@ class TestSetupSecurityEnabled:
             raise RuntimeError("policy unavailable")
 
         monkeypatch.setattr(
-            "openjarvis.security.capabilities.CapabilityPolicy",
+            "arize.security.capabilities.CapabilityPolicy",
             _broken_policy,
         )
 
@@ -100,7 +100,7 @@ class TestSetupSecurityEnabled:
             raise RuntimeError("limiter unavailable")
 
         monkeypatch.setattr(
-            "openjarvis.security.rate_limiter.RateLimiter",
+            "arize.security.rate_limiter.RateLimiter",
             _broken_limiter,
         )
 
@@ -134,7 +134,7 @@ def test_partial_capability_config_preserves_profile_defaults(
     enabled,
     default_deny,
 ):
-    from openjarvis.core.config import load_config
+    from arize.core.config import load_config
 
     path = tmp_path / "config.toml"
     path.write_text(

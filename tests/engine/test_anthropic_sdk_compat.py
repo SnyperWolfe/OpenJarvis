@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-from openjarvis.core.types import Message, Role
-from openjarvis.engine.cloud import CloudEngine
+from arize.core.types import Message, Role
+from arize.engine.cloud import CloudEngine
 
 
 @pytest.mark.asyncio

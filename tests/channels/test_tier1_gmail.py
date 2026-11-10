@@ -8,10 +8,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from openjarvis.channels._stubs import ChannelStatus
-from openjarvis.channels.gmail import GmailChannel
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.registry import ChannelRegistry
+from arize.channels._stubs import ChannelStatus
+from arize.channels.gmail import GmailChannel
+from arize.core.events import EventBus, EventType
+from arize.core.registry import ChannelRegistry
 from tests.channels.channel_test_helpers import make_common_channel_tests
 
 
@@ -188,8 +188,8 @@ class TestLive:
 
         result = ch.send(
             recipient,
-            "OpenJarvis Gmail channel test message",
-            metadata={"subject": "OpenJarvis Test"},
+            "ARIZE Gmail channel test message",
+            metadata={"subject": "ARIZE Test"},
         )
         assert result is True
         ch.disconnect()

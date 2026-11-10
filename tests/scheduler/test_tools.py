@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
-from openjarvis.scheduler.scheduler import ScheduledTask
-from openjarvis.scheduler.tools import (
+from arize.scheduler.scheduler import ScheduledTask
+from arize.scheduler.tools import (
     CancelScheduledTaskTool,
     ListScheduledTasksTool,
     PauseScheduledTaskTool,

@@ -1,10 +1,10 @@
-"""Tests for openjarvis.connectors.embeddings.default_embedder."""
+"""Tests for arize.connectors.embeddings.default_embedder."""
 
 from __future__ import annotations
 
 import pytest
 
-from openjarvis.connectors import embeddings
+from arize.connectors import embeddings
 
 
 def test_default_embedder_returns_instance_when_available(

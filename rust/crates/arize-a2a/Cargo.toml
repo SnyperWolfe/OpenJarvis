@@ -1,0 +1,10 @@
+[package]
+name = "arize-a2a"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arize-core = { path = "../arize-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }

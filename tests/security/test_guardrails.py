@@ -9,12 +9,12 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.types import Message, Role, ToolCall
-from openjarvis.engine._stubs import StreamChunk
-from openjarvis.security.guardrails import GuardrailsEngine, SecurityBlockError
-from openjarvis.security.scanner import SecretScanner
-from openjarvis.security.types import RedactionMode
+from arize.core.events import EventBus, EventType
+from arize.core.types import Message, Role, ToolCall
+from arize.engine._stubs import StreamChunk
+from arize.security.guardrails import GuardrailsEngine, SecurityBlockError
+from arize.security.scanner import SecretScanner
+from arize.security.types import RedactionMode
 
 
 def _make_mock_engine(response_content: str = "Hello!") -> MagicMock:

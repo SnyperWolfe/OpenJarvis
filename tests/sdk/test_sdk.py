@@ -1,4 +1,4 @@
-"""Tests for the Python SDK — Jarvis class and MemoryHandle."""
+"""Tests for the Python SDK — ARIZE class and MemoryHandle."""
 
 from __future__ import annotations
 
@@ -6,9 +6,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-import openjarvis
-from openjarvis.core.config import JarvisConfig
-from openjarvis.sdk import Jarvis, MemoryHandle
+import arize
+from arize.core.config import ArizeConfig
+from arize.sdk import ARIZE, MemoryHandle
 
 
 def _make_engine(content="Hello from SDK"):
@@ -25,47 +25,47 @@ def _make_engine(content="Hello from SDK"):
     return engine
 
 
-class TestJarvisInit:
+class TestArizeInit:
     def test_default_config(self):
-        j = Jarvis(config=JarvisConfig())
+        j = ARIZE(config=ArizeConfig())
         assert j.config is not None
         j.close()
 
     def test_custom_config(self):
-        cfg = JarvisConfig()
-        j = Jarvis(config=cfg)
+        cfg = ArizeConfig()
+        j = ARIZE(config=cfg)
         assert j.config is cfg
         j.close()
 
     def test_version_property(self):
-        j = Jarvis(config=JarvisConfig())
-        assert j.version == openjarvis.__version__
+        j = ARIZE(config=ArizeConfig())
+        assert j.version == arize.__version__
         j.close()
 
     def test_engine_key_override(self):
-        j = Jarvis(config=JarvisConfig(), engine_key="custom")
+        j = ARIZE(config=ArizeConfig(), engine_key="custom")
         assert j._engine_key == "custom"
         j.close()
 
     def test_model_override(self):
-        j = Jarvis(config=JarvisConfig(), model="my-model")
+        j = ARIZE(config=ArizeConfig(), model="my-model")
         assert j._model_override == "my-model"
         j.close()
 
 
-class TestJarvisAsk:
+class TestArizeAsk:
     def test_ask_returns_string(self):
         engine = _make_engine("The answer is 42.")
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig(), model="test-model")
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig(), model="test-model")
             result = j.ask("What is the answer?")
             assert result == "The answer is 42."
             j.close()
 
     def test_ask_with_model_override(self):
         engine = _make_engine()
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig())
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig())
             j.ask("Hello", model="custom-model")
             # Verify engine.generate was called with the custom model
             call_kwargs = engine.generate.call_args
@@ -73,8 +73,8 @@ class TestJarvisAsk:
             j.close()
 
     def test_ask_with_agent(self):
-        from openjarvis.agents._stubs import AgentResult
-        from openjarvis.core.registry import AgentRegistry
+        from arize.agents._stubs import AgentResult
+        from arize.core.registry import AgentRegistry
 
         engine = _make_engine()
 
@@ -89,23 +89,23 @@ class TestJarvisAsk:
 
         AgentRegistry.register_value("mock-agent", MockAgent)
 
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig(), model="test-model")
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig(), model="test-model")
             result = j.ask("Hello", agent="mock-agent")
             assert result == "Agent response"
             j.close()
 
     def test_simple_agent_ignores_tool_security_kwargs(self):
-        from openjarvis.agents.simple import SimpleAgent
-        from openjarvis.core.registry import AgentRegistry
-        from openjarvis.security import SecurityContext
+        from arize.agents.simple import SimpleAgent
+        from arize.core.registry import AgentRegistry
+        from arize.security import SecurityContext
 
         engine = _make_engine("simple secured response")
         AgentRegistry.register_value("simple", SimpleAgent)
         with (
-            patch("openjarvis.sdk.get_engine", return_value=("mock", engine)),
+            patch("arize.sdk.get_engine", return_value=("mock", engine)),
             patch(
-                "openjarvis.security.setup_security",
+                "arize.security.setup_security",
                 return_value=SecurityContext(
                     engine=engine,
                     capability_policy=object(),
@@ -113,17 +113,17 @@ class TestJarvisAsk:
                 ),
             ),
         ):
-            j = Jarvis(config=JarvisConfig(), model="test-model")
+            j = ARIZE(config=ArizeConfig(), model="test-model")
             result = j.ask("Hello", agent="simple")
             j.close()
 
         assert result == "simple secured response"
 
     def test_direct_operation_agent_receives_policy_rate_and_identity(self):
-        from openjarvis.agents._stubs import AgentContext, AgentResult, BaseAgent
-        from openjarvis.core.registry import AgentRegistry
-        from openjarvis.security import SecurityContext
-        from openjarvis.security.capabilities import CapabilityPolicy
+        from arize.agents._stubs import AgentContext, AgentResult, BaseAgent
+        from arize.core.registry import AgentRegistry
+        from arize.security import SecurityContext
+        from arize.security.capabilities import CapabilityPolicy
 
         class _RecordingLimiter:
             def __init__(self):
@@ -148,9 +148,9 @@ class TestJarvisAsk:
         AgentRegistry.register_value("direct-sdk", _DirectSDKAgent)
 
         with (
-            patch("openjarvis.sdk.get_engine", return_value=("mock", engine)),
+            patch("arize.sdk.get_engine", return_value=("mock", engine)),
             patch(
-                "openjarvis.security.setup_security",
+                "arize.security.setup_security",
                 return_value=SecurityContext(
                     engine=engine,
                     capability_policy=policy,
@@ -158,7 +158,7 @@ class TestJarvisAsk:
                 ),
             ),
         ):
-            j = Jarvis(config=JarvisConfig(), model="test-model")
+            j = ARIZE(config=ArizeConfig(), model="test-model")
             result = j.ask("run", agent="direct-sdk")
             j.close()
 
@@ -166,13 +166,13 @@ class TestJarvisAsk:
         assert limiter.keys == ["direct-sdk:agent_run"]
 
     def test_ask_with_agent_wires_persona(self, tmp_path):
-        from openjarvis.agents.simple import SimpleAgent
-        from openjarvis.core.registry import AgentRegistry
+        from arize.agents.simple import SimpleAgent
+        from arize.core.registry import AgentRegistry
 
         soul = tmp_path / "SOUL.md"
         soul.write_text("SDK_PERSONA_SENTINEL", encoding="utf-8")
 
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         cfg.memory_files.soul_path = str(soul)
         cfg.memory_files.memory_path = ""
         cfg.memory_files.user_path = ""
@@ -182,24 +182,24 @@ class TestJarvisAsk:
             AgentRegistry.register_value("simple", SimpleAgent)
 
         engine = _make_engine()
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=cfg, model="test-model")
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=cfg, model="test-model")
             j.ask("Hello", agent="simple")
             messages = engine.generate.call_args.args[0]
             assert "SDK_PERSONA_SENTINEL" in messages[0].content
             j.close()
 
     def test_ask_no_engine_raises(self):
-        with patch("openjarvis.sdk.get_engine", return_value=None):
-            j = Jarvis(config=JarvisConfig())
+        with patch("arize.sdk.get_engine", return_value=None):
+            j = ARIZE(config=ArizeConfig())
             with pytest.raises(RuntimeError, match="No inference engine"):
                 j.ask("Hello")
             j.close()
 
     def test_ask_full_returns_dict(self):
         engine = _make_engine("Full response")
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig(), model="test-model")
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig(), model="test-model")
             result = j.ask_full("Hello")
             assert isinstance(result, dict)
             assert "content" in result
@@ -208,26 +208,26 @@ class TestJarvisAsk:
             j.close()
 
 
-class TestJarvisModels:
+class TestArizeModels:
     def test_list_models(self):
         engine = _make_engine()
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig())
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig())
             models = j.list_models()
             assert models == ["test-model"]
             j.close()
 
     def test_list_engines(self):
-        from openjarvis.core.registry import EngineRegistry
+        from arize.core.registry import EngineRegistry
 
         EngineRegistry.register_value("test-eng", object)
-        j = Jarvis(config=JarvisConfig())
+        j = ARIZE(config=ArizeConfig())
         engines = j.list_engines()
         assert "test-eng" in engines
         j.close()
 
     def test_list_engines_empty(self):
-        j = Jarvis(config=JarvisConfig())
+        j = ARIZE(config=ArizeConfig())
         engines = j.list_engines()
         assert isinstance(engines, list)
         j.close()
@@ -235,13 +235,13 @@ class TestJarvisModels:
 
 class TestMemoryHandle:
     def test_lazy_backend_init(self):
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         handle = MemoryHandle(cfg)
         assert handle._backend is None
         handle.close()
 
     def test_close_idempotent(self):
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         handle = MemoryHandle(cfg)
         handle.close()
         handle.close()  # should not raise
@@ -256,7 +256,7 @@ class TestMemoryHandle:
         mock_backend = MagicMock()
         mock_backend.store.return_value = "doc-1"
 
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         handle = MemoryHandle(cfg)
         handle._backend = mock_backend
 
@@ -274,7 +274,7 @@ class TestMemoryHandle:
         mock_result.metadata = {}
         mock_backend.retrieve.return_value = [mock_result]
 
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         handle = MemoryHandle(cfg)
         handle._backend = mock_backend
 
@@ -287,7 +287,7 @@ class TestMemoryHandle:
         mock_backend = MagicMock()
         mock_backend.retrieve.return_value = []
 
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         handle = MemoryHandle(cfg)
         handle._backend = mock_backend
 
@@ -299,7 +299,7 @@ class TestMemoryHandle:
         mock_backend = MagicMock()
         mock_backend.count.return_value = 5
 
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         handle = MemoryHandle(cfg)
         handle._backend = mock_backend
 
@@ -309,7 +309,7 @@ class TestMemoryHandle:
         handle.close()
 
 
-class TestJarvisStreaming:
+class TestArizeStreaming:
     @pytest.mark.asyncio
     async def test_ask_stream_yields_tokens(self):
         engine = _make_engine()
@@ -320,8 +320,8 @@ class TestJarvisStreaming:
 
         engine.stream = mock_stream
 
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig(), model="test-model")
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig(), model="test-model")
             tokens = []
             async for token in j.ask_stream("Hi"):
                 tokens.append(token)
@@ -338,8 +338,8 @@ class TestJarvisStreaming:
 
         engine.stream = mock_stream
 
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig(), model="test-model")
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig(), model="test-model")
             chunks = []
             async for chunk in j.ask_full_stream("Hi"):
                 chunks.append(chunk)
@@ -369,8 +369,8 @@ class TestJarvisStreaming:
 
         engine.stream = mock_stream
 
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig())
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig())
             tokens = []
             async for token in j.ask_stream("Hi", model="custom-model"):
                 tokens.append(token)
@@ -379,16 +379,16 @@ class TestJarvisStreaming:
             j.close()
 
 
-class TestJarvisLifecycle:
+class TestArizeLifecycle:
     @pytest.mark.parametrize("security_enabled", [False, True])
     def test_close_initialized_engine(self, security_enabled: bool) -> None:
-        from openjarvis.security.guardrails import GuardrailsEngine
+        from arize.security.guardrails import GuardrailsEngine
 
-        cfg = JarvisConfig()
+        cfg = ArizeConfig()
         cfg.security.enabled = security_enabled
         engine = _make_engine()
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=cfg)
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=cfg)
             try:
                 assert j.list_models() == ["test-model"]
                 assert (
@@ -403,16 +403,16 @@ class TestJarvisLifecycle:
 
     def test_context_manager_closes_initialized_engine(self) -> None:
         engine = _make_engine()
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            with Jarvis(config=JarvisConfig()) as j:
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            with ARIZE(config=ArizeConfig()) as j:
                 j.list_models()
             engine.close.assert_called_once()
 
     def test_engine_close_failure_clears_reference(self) -> None:
         engine = _make_engine()
         engine.close.side_effect = RuntimeError("cleanup failed")
-        with patch("openjarvis.sdk.get_engine", return_value=("mock", engine)):
-            j = Jarvis(config=JarvisConfig())
+        with patch("arize.sdk.get_engine", return_value=("mock", engine)):
+            j = ARIZE(config=ArizeConfig())
             try:
                 j.list_models()
                 j.close()
@@ -423,11 +423,11 @@ class TestJarvisLifecycle:
                 j.close()
 
     def test_close_releases_resources(self):
-        j = Jarvis(config=JarvisConfig())
+        j = ARIZE(config=ArizeConfig())
         j.close()
         assert j._engine is None
 
     def test_double_close_safe(self):
-        j = Jarvis(config=JarvisConfig())
+        j = ARIZE(config=ArizeConfig())
         j.close()
         j.close()  # should not raise

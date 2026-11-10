@@ -1,6 +1,6 @@
 # Desktop auto-update
 
-The OpenJarvis desktop app ships with [Tauri's updater
+The ARIZE desktop app ships with [Tauri's updater
 plugin](https://v2.tauri.app/plugin/updater/), which checks for new
 versions on launch and every 30 minutes. When a newer signed build is
 available, the app prompts the user to download and install it.
@@ -84,18 +84,18 @@ reinstall.
 
 ## Disabling the updater locally
 
-For frontend development, set `VITE_OPENJARVIS_NO_UPDATER=1` in your
+For frontend development, set `VITE_ARIZE_NO_UPDATER=1` in your
 shell before running `npm run tauri dev`. Vite injects any
 `VITE_`-prefixed env var into `import.meta.env`, and the
 `UpdateChecker.tsx` component honors it to skip the 30-minute poll.
 
 ```bash
-export VITE_OPENJARVIS_NO_UPDATER=1
+export VITE_ARIZE_NO_UPDATER=1
 npm run tauri dev
 ```
 
 This is purely a dev escape hatch — it has no effect on production
-builds (where `import.meta.env.VITE_OPENJARVIS_NO_UPDATER` will be
+builds (where `import.meta.env.VITE_ARIZE_NO_UPDATER` will be
 `undefined` unless you explicitly set it at build time).
 
 ## Verifying a release manually

@@ -6,9 +6,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.security.audit import AuditLogger
-from openjarvis.security.types import (
+from arize.core.events import EventBus, EventType
+from arize.security.audit import AuditLogger
+from arize.security.types import (
     ScanFinding,
     SecurityEvent,
     SecurityEventType,

@@ -1,20 +1,20 @@
-# Contributing to OpenJarvis
+# Contributing to ARIZE
 
-Thank you for your interest in contributing to OpenJarvis! This guide covers everything you need to know — from why to contribute, to how to submit your first pull request.
+Thank you for your interest in contributing to ARIZE! This guide covers everything you need to know — from why to contribute, to how to submit your first pull request.
 
 ---
 
 ## Why Contribute?
 
-Contributing to OpenJarvis isn't just about code — it's about building the future of on-device AI together. Here's what you get:
+Contributing to ARIZE isn't just about code — it's about building the future of on-device AI together. Here's what you get:
 
 ### Paper Acknowledgment
 
-All contributors with merged pull requests will be acknowledged as contributors on the OpenJarvis paper release.
+All contributors with merged pull requests will be acknowledged as contributors on the ARIZE paper release.
 
 ### Mac Mini Giveaway
 
-We're giving away a Mac Mini to one lucky contributor! Install OpenJarvis on your personal machine and opt in via the desktop app to share anonymized savings data (FLOPs, dollar cost, energy) for a chance to win. Your data is fully anonymous — no IP, no hardware info beyond savings metrics. You must share your email via the desktop app to be eligible.
+We're giving away a Mac Mini to one lucky contributor! Install ARIZE on your personal machine and opt in via the desktop app to share anonymized savings data (FLOPs, dollar cost, energy) for a chance to win. Your data is fully anonymous — no IP, no hardware info beyond savings metrics. You must share your email via the desktop app to be eligible.
 
 See the [Savings Leaderboard](https://open-jarvis.github.io/OpenJarvis/leaderboard/) for details.
 
@@ -84,7 +84,7 @@ To avoid wasted effort, note that PRs in these categories are unlikely to be mer
 
 ```bash
 git clone https://github.com/open-jarvis/OpenJarvis.git
-cd OpenJarvis
+cd ARIZE
 uv sync --extra dev
 ```
 
@@ -174,7 +174,7 @@ Keep the first line under 72 characters. Reference relevant issues (e.g., `fixes
 
 ## Contribution Areas
 
-OpenJarvis is built on five composable primitives. Here's where you can contribute:
+ARIZE is built on five composable primitives. Here's where you can contribute:
 
 | Area | What to Build | Guide |
 |---|---|---|

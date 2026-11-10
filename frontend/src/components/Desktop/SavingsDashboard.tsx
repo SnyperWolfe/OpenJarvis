@@ -267,10 +267,10 @@ function isProfane(text: string): boolean {
   return false;
 }
 
-const OPTIN_KEY = 'openjarvis-desktop-optin';
-const OPTIN_NAME_KEY = 'openjarvis-desktop-display-name';
-const OPTIN_EMAIL_KEY = 'openjarvis-desktop-email';
-const OPTIN_ANONID_KEY = 'openjarvis-desktop-anon-id';
+const OPTIN_KEY = 'arize-desktop-optin';
+const OPTIN_NAME_KEY = 'arize-desktop-display-name';
+const OPTIN_EMAIL_KEY = 'arize-desktop-email';
+const OPTIN_ANONID_KEY = 'arize-desktop-anon-id';
 
 function getOrCreateAnonId(): string {
   const stored = localStorage.getItem(OPTIN_ANONID_KEY);

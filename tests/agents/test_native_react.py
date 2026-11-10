@@ -7,12 +7,12 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from openjarvis.agents._stubs import AgentContext
-from openjarvis.agents.native_react import NativeReActAgent
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.registry import AgentRegistry
-from openjarvis.core.types import Conversation, Message, Role, ToolResult
-from openjarvis.tools._stubs import BaseTool, ToolSpec
+from arize.agents._stubs import AgentContext
+from arize.agents.native_react import NativeReActAgent
+from arize.core.events import EventBus, EventType
+from arize.core.registry import AgentRegistry
+from arize.core.types import Conversation, Message, Role, ToolResult
+from arize.tools._stubs import BaseTool, ToolSpec
 
 # ---------------------------------------------------------------------------
 # Helpers

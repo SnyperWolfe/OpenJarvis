@@ -34,35 +34,35 @@ const PLATFORMS: Platform[] = [
     id: 'mac-arm',
     label: 'macOS (Apple Silicon)',
     shortLabel: 'macOS (Apple Silicon)',
-    file: 'OpenJarvis_aarch64.dmg',
+    file: 'Arize_aarch64.dmg',
     icon: Apple,
   },
   {
     id: 'mac-intel',
     label: 'macOS (Intel)',
     shortLabel: 'macOS (Intel)',
-    file: 'OpenJarvis_x64.dmg',
+    file: 'Arize_x64.dmg',
     icon: Apple,
   },
   {
     id: 'windows',
     label: 'Windows (64-bit)',
     shortLabel: 'Windows (64-bit)',
-    file: 'OpenJarvis_x64-setup.msi',
+    file: 'Arize_x64-setup.msi',
     icon: Monitor,
   },
   {
     id: 'linux-deb',
     label: 'Linux (DEB)',
     shortLabel: 'Linux (DEB)',
-    file: 'OpenJarvis_amd64.deb',
+    file: 'Arize_amd64.deb',
     icon: Terminal,
   },
   {
     id: 'linux-rpm',
     label: 'Linux (RPM)',
     shortLabel: 'Linux (RPM)',
-    file: 'OpenJarvis_x86_64.rpm',
+    file: 'Arize_x86_64.rpm',
     icon: Terminal,
   },
 ];
@@ -199,7 +199,7 @@ function HostedView() {
         <Sparkles size={32} />
       </div>
       <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
-        OpenJarvis
+        ARIZE
       </h1>
       <p
         className="text-sm mb-6 leading-relaxed max-w-md mx-auto"
@@ -263,7 +263,7 @@ function DesktopView() {
           <Sparkles size={32} />
         </div>
         <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
-          OpenJarvis Desktop
+          ARIZE Desktop
         </h1>
         <p
           className="text-sm mb-4 leading-relaxed max-w-md mx-auto"
@@ -336,7 +336,7 @@ function SelfHostedView() {
           <Sparkles size={32} />
         </div>
         <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
-          OpenJarvis
+          ARIZE
         </h1>
         <p
           className="text-sm mb-4 leading-relaxed max-w-md mx-auto"
@@ -406,18 +406,18 @@ function SelfHostedView() {
           <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
             Clone and install (Python 3.10+ required):
           </p>
-          <CodeBlock code={"git clone https://github.com/open-jarvis/OpenJarvis.git\ncd OpenJarvis\nuv sync"} />
+          <CodeBlock code={"git clone https://github.com/open-jarvis/OpenJarvis.git\ncd ARIZE\nuv sync"} />
           <p className="text-xs mt-1" style={{ color: 'var(--color-text-secondary)' }}>
             Then get started:
           </p>
-          <CodeBlock code={"jarvis init\njarvis doctor\njarvis chat"} />
+          <CodeBlock code={"arize init\narize doctor\narize chat"} />
         </Section>
 
         <Section icon={Globe} title="Browser App (Self-Hosted)">
           <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
             Launch the API server to get the full UI in your browser:
           </p>
-          <CodeBlock code={"git clone https://github.com/open-jarvis/OpenJarvis.git\ncd OpenJarvis\nuv sync --extra desktop\njarvis serve --port 8000"} />
+          <CodeBlock code={"git clone https://github.com/open-jarvis/OpenJarvis.git\ncd ARIZE\nuv sync --extra desktop\narize serve --port 8000"} />
           <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
             The chat, dashboard, energy profiling, and cost comparison all run
             locally on your machine.
@@ -428,7 +428,7 @@ function SelfHostedView() {
           <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
             Deploy with Docker Compose for a zero-setup hosted instance:
           </p>
-          <CodeBlock code={"git clone https://github.com/open-jarvis/OpenJarvis.git\ncd OpenJarvis\ndocker compose -f deploy/docker/docker-compose.yml up -d"} />
+          <CodeBlock code={"git clone https://github.com/open-jarvis/OpenJarvis.git\ncd ARIZE\ndocker compose -f deploy/docker/docker-compose.yml up -d"} />
           <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
             This starts both the API server and Ollama. The web UI is bundled and
             served automatically at port 8000.

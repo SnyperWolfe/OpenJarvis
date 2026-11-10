@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — OpenJarvis curl-pipe-bash installer.
+# install.sh — ARIZE curl-pipe-bash installer.
 #
 # Usage:
 #   curl -fsSL https://open-jarvis.github.io/OpenJarvis/install.sh | bash
@@ -12,9 +12,9 @@
 #   --no-analytics         Decline analytics without an interactive prompt
 #
 # Environment overrides:
-#   OPENJARVIS_HOME        Install dir (default: $HOME/.openjarvis)
-#   OPENJARVIS_REPO_URL    git repo URL (default: https://github.com/open-jarvis/OpenJarvis.git)
-#   OPENJARVIS_FORCE_WSL   Set 1 to force WSL detection (testing)
+#   ARIZE_HOME        Install dir (default: $HOME/.arize)
+#   ARIZE_REPO_URL    git repo URL (default: https://github.com/open-jarvis/OpenJarvis.git)
+#   ARIZE_FORCE_WSL   Set 1 to force WSL detection (testing)
 
 set -euo pipefail
 
@@ -43,7 +43,7 @@ done
 # ---- non-WSL Windows refusal ----
 # Running the installer in Git Bash / MSYS2 / Cygwin on native Windows
 # (i.e. NOT inside WSL2) gets the user into a confusing failure state:
-# uv/git tooling installs to Windows paths the rest of OpenJarvis can't
+# uv/git tooling installs to Windows paths the rest of ARIZE can't
 # reach, and Ollama integration silently breaks. The supported Windows
 # path is WSL2. Bail early with a clear next step rather than letting
 # users discover this 3 minutes into a doomed install.
@@ -52,7 +52,7 @@ case "$(uname -s 2>/dev/null)" in
         cat >&2 <<'EOF'
 install.sh: native Windows (Git Bash / MSYS2 / Cygwin) is not supported.
 
-OpenJarvis runs on Windows via WSL2. Two paths:
+ARIZE runs on Windows via WSL2. Two paths:
 
   1. WSL2 (recommended for the CLI). One-time setup in an admin PowerShell:
 
@@ -77,7 +77,7 @@ if [[ "$(id -u)" -eq 0 ]]; then
     cat >&2 <<'EOF'
 install.sh: don't run as root.
 
-OpenJarvis installs to $HOME/.openjarvis, not /usr/local. Re-run as your
+ARIZE installs to $HOME/.arize, not /usr/local. Re-run as your
 regular user (without sudo).
 EOF
     exit 1
@@ -221,27 +221,27 @@ if ! command -v python3 >/dev/null 2>&1; then
 fi
 
 # ---- env ----
-# OpenJarvis keeps ALL of its state (install tree + runtime data, configs,
+# ARIZE keeps ALL of its state (install tree + runtime data, configs,
 # databases, caches, logs) under a single root so it never clutters $HOME
-# beyond one directory. Relocate it by exporting OPENJARVIS_HOME before
+# beyond one directory. Relocate it by exporting ARIZE_HOME before
 # running the installer, e.g.:
-#     OPENJARVIS_HOME=~/apps/openjarvis curl ... | bash
-# The Python runtime honors the same override (and, when OPENJARVIS_HOME is
-# unset, $XDG_DATA_HOME/openjarvis if XDG_DATA_HOME is set). With nothing set
-# the root is ~/.openjarvis, so existing installs are untouched.
-OPENJARVIS_HOME="${OPENJARVIS_HOME:-$HOME/.openjarvis}"
-OPENJARVIS_REPO_URL="${OPENJARVIS_REPO_URL:-https://github.com/open-jarvis/OpenJarvis.git}"
-SRC_DIR="$OPENJARVIS_HOME/src"
-VENV_DIR="$OPENJARVIS_HOME/.venv"
-STATE_DIR="$OPENJARVIS_HOME/.state"
-SCRIPTS_DIR="$OPENJARVIS_HOME/.scripts"
+#     ARIZE_HOME=~/apps/arize curl ... | bash
+# The Python runtime honors the same override (and, when ARIZE_HOME is
+# unset, $XDG_DATA_HOME/arize if XDG_DATA_HOME is set). With nothing set
+# the root is ~/.arize, so existing installs are untouched.
+ARIZE_HOME="${ARIZE_HOME:-$HOME/.arize}"
+ARIZE_REPO_URL="${ARIZE_REPO_URL:-https://github.com/open-jarvis/OpenJarvis.git}"
+SRC_DIR="$ARIZE_HOME/src"
+VENV_DIR="$ARIZE_HOME/.venv"
+STATE_DIR="$ARIZE_HOME/.state"
+SCRIPTS_DIR="$ARIZE_HOME/.scripts"
 STATE_FILE="$STATE_DIR/install-state.json"
 
-mkdir -p "$OPENJARVIS_HOME" "$STATE_DIR" "$SCRIPTS_DIR"
+mkdir -p "$ARIZE_HOME" "$STATE_DIR" "$SCRIPTS_DIR"
 
 # ---- WSL detection ----
 WSL=0
-if [[ "${OPENJARVIS_FORCE_WSL:-0}" == "1" ]]; then
+if [[ "${ARIZE_FORCE_WSL:-0}" == "1" ]]; then
     WSL=1
 elif [[ -f /proc/sys/kernel/osrelease ]] && grep -qi "microsoft" /proc/sys/kernel/osrelease 2>/dev/null; then
     WSL=1
@@ -250,13 +250,13 @@ fi
 # ---- analytics consent and install beacons ----
 #
 # Posts a small JSON event to PostHog at each install stage so the
-# OpenJarvis team can see where users drop off during install.
+# ARIZE team can see where users drop off during install.
 # Install payloads contain OS, arch, elapsed time, stage name, and a
 # random installation ID. Beacons are disabled until consent is given.
 #
-ANALYTICS_HOST="${OPENJARVIS_ANALYTICS_HOST:-https://34.231.106.201.sslip.io}"
-ANALYTICS_KEY="${OPENJARVIS_ANALYTICS_KEY:-phc_ysKu72QaxzYNmDpHFcesD2ZZAe68zkdWJEKoYYkc5e3n}"
-ANON_ID_FILE="$OPENJARVIS_HOME/anon_id"
+ANALYTICS_HOST="${ARIZE_ANALYTICS_HOST:-https://34.231.106.201.sslip.io}"
+ANALYTICS_KEY="${ARIZE_ANALYTICS_KEY:-phc_ysKu72QaxzYNmDpHFcesD2ZZAe68zkdWJEKoYYkc5e3n}"
+ANON_ID_FILE="$ARIZE_HOME/anon_id"
 INSTALL_START_EPOCH="$(date +%s)"
 CURRENT_STAGE=""
 
@@ -278,14 +278,14 @@ choose_analytics() {
 
     cat >&3 <<'EOF'
 
-Help improve OpenJarvis by sharing optional install and usage statistics.
+Help improve ARIZE by sharing optional install and usage statistics.
 Data includes installation and feature usage, timings, token counts, error
 categories, environment metadata, and a random installation ID.
-Recipient: the OpenJarvis team's PostHog analytics endpoint.
+Recipient: the ARIZE team's PostHog analytics endpoint.
 Privacy details: https://open-jarvis.github.io/OpenJarvis/telemetry/
-You can disable sharing later: jarvis config set analytics.enabled false
+You can disable sharing later: arize config set analytics.enabled false
 (then restart the server and reload the app).
-Declining does not change OpenJarvis functionality.
+Declining does not change ARIZE functionality.
 EOF
     printf 'Analytics destination: %s\n' "$ANALYTICS_HOST" >&3
     local answer
@@ -310,7 +310,7 @@ EOF
 
 persist_analytics_choice() {
     # Always run, including when the installer skips write_config on a
-    # rerun. Use the installed TOML editor directly: an older jarvis CLI
+    # rerun. Use the installed TOML editor directly: an older arize CLI
     # rejects the new choice_recorded key before it can save the choice.
     local enabled=false
     if analytics_enabled; then
@@ -324,9 +324,9 @@ from pathlib import Path
 
 import tomlkit
 
-from openjarvis.core.config import DEFAULT_CONFIG_PATH
+from arize.core.config import DEFAULT_CONFIG_PATH
 
-path = Path(os.environ.get("OPENJARVIS_CONFIG") or DEFAULT_CONFIG_PATH).expanduser().resolve()
+path = Path(os.environ.get("ARIZE_CONFIG") or DEFAULT_CONFIG_PATH).expanduser().resolve()
 path.parent.mkdir(parents=True, exist_ok=True)
 doc = tomlkit.parse(path.read_text(encoding="utf-8")) if path.exists() else tomlkit.document()
 if "analytics" not in doc:
@@ -544,10 +544,10 @@ clone_repo() {
     fi
     # Keep commit/tag history for hatch-vcs. Local sources may themselves be
     # shallow and cannot safely serve a partial clone's lazy object fetches.
-    if [[ "$OPENJARVIS_REPO_URL" == file://* || -e "$OPENJARVIS_REPO_URL" ]]; then
-        git clone "$OPENJARVIS_REPO_URL" "$SRC_DIR"
+    if [[ "$ARIZE_REPO_URL" == file://* || -e "$ARIZE_REPO_URL" ]]; then
+        git clone "$ARIZE_REPO_URL" "$SRC_DIR"
     else
-        git clone --filter=blob:none "$OPENJARVIS_REPO_URL" "$SRC_DIR"
+        git clone --filter=blob:none "$ARIZE_REPO_URL" "$SRC_DIR"
     fi
 }
 
@@ -696,19 +696,19 @@ pull_default_model() {
 }
 
 write_config() {
-    "$VENV_DIR/bin/jarvis" _bootstrap --write-config \
+    "$VENV_DIR/bin/arize" _bootstrap --write-config \
         --engine ollama --model qwen3.5:2b \
         --prefer-cloud-when-available
 }
 
 install_symlinks() {
     mkdir -p "$HOME/.local/bin"
-    ln -sf "$SCRIPTS_DIR/jarvis-wrapper.sh" "$HOME/.local/bin/jarvis"
-    ln -sf "$SCRIPTS_DIR/jarvis-uninstall.sh" "$HOME/.local/bin/jarvis-uninstall"
+    ln -sf "$SCRIPTS_DIR/arize-wrapper.sh" "$HOME/.local/bin/arize"
+    ln -sf "$SCRIPTS_DIR/arize-uninstall.sh" "$HOME/.local/bin/arize-uninstall"
 }
 
 # Tracks whether the user needs to source ~/.bashrc / ~/.zshrc / open a
-# new terminal before `jarvis` will resolve. Set only when ensure_path
+# new terminal before `arize` will resolve. Set only when ensure_path
 # actually modified the user's rc file.
 PATH_MODIFIED=0
 
@@ -722,7 +722,7 @@ ensure_path() {
     else
         rc="$HOME/.bashrc"
     fi
-    if grep -q "OpenJarvis" "$rc" 2>/dev/null; then
+    if grep -q "ARIZE" "$rc" 2>/dev/null; then
         # rc already has our PATH line from a prior install; just remind.
         PATH_MODIFIED=1
         PATH_MODIFIED_RC="$rc"
@@ -730,7 +730,7 @@ ensure_path() {
     fi
     {
         echo ''
-        echo '# OpenJarvis'
+        echo '# ARIZE'
         echo 'export PATH="$HOME/.local/bin:$PATH"'
     } >> "$rc"
     PATH_MODIFIED=1
@@ -744,7 +744,7 @@ detach_bg_orchestrator() {
     fi
     local models
     models=$("$VENV_DIR/bin/python" - <<'PYEOF' 2>/dev/null || true
-from openjarvis.core.config import detect_hardware, recommend_model
+from arize.core.config import detect_hardware, recommend_model
 hw = detect_hardware()
 tier = recommend_model(hw, "ollama")
 TIERS = ["qwen3.5:2b", "qwen3.5:4b", "qwen3.5:9b", "qwen3.5:27b"]
@@ -765,8 +765,8 @@ PYEOF
 }
 
 # ---- run ----
-echo "OpenJarvis installer"
-echo "  install dir: $OPENJARVIS_HOME"
+echo "ARIZE installer"
+echo "  install dir: $ARIZE_HOME"
 echo "  WSL2:        $WSL"
 echo
 
@@ -774,10 +774,10 @@ choose_analytics
 beacon "install_started"
 
 step install_uv         "Install uv"            install_uv
-step clone_repo         "Clone OpenJarvis repo" clone_repo
+step clone_repo         "Clone ARIZE repo" clone_repo
 step copy_scripts       "Copy install scripts"  copy_scripts
 step create_venv        "Create venv"           create_venv
-step editable_install   "Install OpenJarvis"    editable_install
+step editable_install   "Install ARIZE"    editable_install
 step install_ollama     "Install Ollama"        install_ollama
 step start_ollama       "Start Ollama daemon"   start_ollama
 step pull_default_model "Pull qwen3.5:2b"       pull_default_model
@@ -801,16 +801,16 @@ echo
 # the foreground model pull actually succeeded and (b) whether the PATH
 # update needs a shell refresh. The four combinations:
 #
-#   PATH ok + model ok   -> "type jarvis"
-#   PATH new + model ok  -> "source rc && jarvis  (or open new terminal)"
-#   PATH ok + model bad  -> "model still downloading; jarvis doctor"
-#   PATH new + model bad -> "source rc && jarvis doctor; chat works once download finishes"
+#   PATH ok + model ok   -> "type arize"
+#   PATH new + model ok  -> "source rc && arize  (or open new terminal)"
+#   PATH ok + model bad  -> "model still downloading; arize doctor"
+#   PATH new + model bad -> "source rc && arize doctor; chat works once download finishes"
 #
-# `jarvis` and `jarvis doctor` need PATH equally, so the source/restart
+# `arize` and `arize doctor` need PATH equally, so the source/restart
 # guidance goes first when PATH was modified.
-NEXT_CMD="jarvis"
+NEXT_CMD="arize"
 if [[ "$MODEL_PULL_OK" -ne 1 ]]; then
-    NEXT_CMD="jarvis doctor"
+    NEXT_CMD="arize doctor"
 fi
 
 if [[ "$PATH_MODIFIED" -eq 1 ]]; then
@@ -832,7 +832,7 @@ fi
 
 if [[ "$MODEL_PULL_OK" -ne 1 ]]; then
     cat <<EOF
-NOTE: the qwen3.5:2b model didn't finish downloading. 'jarvis doctor'
+NOTE: the qwen3.5:2b model didn't finish downloading. 'arize doctor'
 shows the retry progress; chat will work once the download completes
 in the background.
 
@@ -843,5 +843,5 @@ cat <<EOF
 Background work continues silently:
   - Rust toolchain + maturin extension build
   - Bigger model downloads
-  Run 'jarvis doctor' to check status anytime.
+  Run 'arize doctor' to check status anytime.
 EOF

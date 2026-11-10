@@ -10,16 +10,16 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from openjarvis.mcp.protocol import MCPRequest
-from openjarvis.mcp.server import MCPServer
-from openjarvis.mcp.transport import (
+from arize.mcp.protocol import MCPRequest
+from arize.mcp.server import MCPServer
+from arize.mcp.transport import (
     InProcessTransport,
     SSETransport,
     StdioTransport,
     StreamableHTTPTransport,
 )
-from openjarvis.tools.calculator import CalculatorTool
-from openjarvis.tools.think import ThinkTool
+from arize.tools.calculator import CalculatorTool
+from arize.tools.think import ThinkTool
 
 
 @pytest.fixture

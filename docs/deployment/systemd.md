@@ -1,43 +1,43 @@
 # systemd Service (Linux)
 
-OpenJarvis includes a systemd unit file for running the API server as a managed background service on Linux. This provides automatic startup on boot, crash recovery, and integration with standard Linux service management tools.
+ARIZE includes a systemd unit file for running the API server as a managed background service on Linux. This provides automatic startup on boot, crash recovery, and integration with standard Linux service management tools.
 
 ## Prerequisites
 
 Before installing the service, ensure that:
 
-1. OpenJarvis is installed in a virtual environment at `/opt/openjarvis/.venv` (or adjust paths accordingly).
-2. A dedicated `openjarvis` system user exists (recommended for security).
+1. ARIZE is installed in a virtual environment at `/opt/arize/.venv` (or adjust paths accordingly).
+2. A dedicated `arize` system user exists (recommended for security).
 3. An inference engine (such as Ollama) is running and accessible.
 
 Create the user and installation directory:
 
 ```bash
-sudo useradd --system --create-home --home-dir /opt/openjarvis openjarvis
-sudo -u openjarvis python3 -m venv /opt/openjarvis/.venv
-sudo -u openjarvis git clone https://github.com/open-jarvis/OpenJarvis.git /opt/openjarvis/OpenJarvis
-cd /opt/openjarvis/OpenJarvis && sudo -u openjarvis uv sync --extra server
+sudo useradd --system --create-home --home-dir /opt/arize arize
+sudo -u arize python3 -m venv /opt/arize/.venv
+sudo -u arize git clone https://github.com/open-jarvis/OpenJarvis.git /opt/arize/ARIZE
+cd /opt/arize/ARIZE && sudo -u arize uv sync --extra server
 ```
 
 ## Installing the Service
 
 The unit binds `0.0.0.0`, so an **API key is required** — and the unit
-declares `EnvironmentFile=/etc/openjarvis/env` (no `-` prefix), so it will
+declares `EnvironmentFile=/etc/arize/env` (no `-` prefix), so it will
 **fail to start** until that file exists with a key. Create it first:
 
 ```bash
-sudo mkdir -p /etc/openjarvis
-echo "OPENJARVIS_API_KEY=$(jarvis auth generate-key)" | sudo tee /etc/openjarvis/env
-sudo chmod 600 /etc/openjarvis/env
+sudo mkdir -p /etc/arize
+echo "ARIZE_API_KEY=$(arize auth generate-key)" | sudo tee /etc/arize/env
+sudo chmod 600 /etc/arize/env
 ```
 
 Then copy the unit file, reload the daemon, and enable the service:
 
 ```bash
-sudo cp deploy/systemd/openjarvis.service /etc/systemd/system/
+sudo cp deploy/systemd/arize.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable openjarvis
-sudo systemctl start openjarvis
+sudo systemctl enable arize
+sudo systemctl start arize
 ```
 
 Clients must send `Authorization: Bearer <key>` on `/v1/*` and `/api/*`
@@ -47,26 +47,26 @@ can drop the `EnvironmentFile` line.)
 Verify it is running:
 
 ```bash
-sudo systemctl status openjarvis
+sudo systemctl status arize
 ```
 
 ## Service File Reference
 
-The provided unit file at `deploy/systemd/openjarvis.service`:
+The provided unit file at `deploy/systemd/arize.service`:
 
 ```ini
 [Unit]
-Description=OpenJarvis API Server
+Description=ARIZE API Server
 After=network.target
 
 [Service]
 Type=simple
-User=openjarvis
-WorkingDirectory=/opt/openjarvis
-ExecStart=/opt/openjarvis/.venv/bin/jarvis serve --host 0.0.0.0 --port 8000
+User=arize
+WorkingDirectory=/opt/arize
+ExecStart=/opt/arize/.venv/bin/arize serve --host 0.0.0.0 --port 8000
 Restart=on-failure
 RestartSec=5
-Environment=HOME=/opt/openjarvis
+Environment=HOME=/opt/arize
 
 [Install]
 WantedBy=multi-user.target
@@ -76,7 +76,7 @@ WantedBy=multi-user.target
 
 | Directive     | Value              | Description                                                                 |
 |---------------|--------------------|-----------------------------------------------------------------------------|
-| `Description` | `OpenJarvis API Server` | Human-readable name shown in `systemctl status` and logs.              |
+| `Description` | `ARIZE API Server` | Human-readable name shown in `systemctl status` and logs.              |
 | `After`       | `network.target`   | Delays startup until the network stack is available, since the server binds to a network socket and may need to reach a remote engine. |
 
 ### `[Service]` Section
@@ -84,12 +84,12 @@ WantedBy=multi-user.target
 | Directive          | Value                                                              | Description                                                                                     |
 |--------------------|--------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
 | `Type`             | `simple`                                                           | The process started by `ExecStart` is the main service process. systemd considers the service started immediately. |
-| `User`             | `openjarvis`                                                       | Runs the server as the `openjarvis` user rather than root, limiting the blast radius of any security issue. |
-| `WorkingDirectory` | `/opt/openjarvis`                                                  | Sets the working directory for the process. This is where OpenJarvis looks for local files and writes data. |
-| `ExecStart`        | `/opt/openjarvis/.venv/bin/jarvis serve --host 0.0.0.0 --port 8000` | The command to start the server. Uses the full path to the `jarvis` binary inside the virtual environment. |
+| `User`             | `arize`                                                       | Runs the server as the `arize` user rather than root, limiting the blast radius of any security issue. |
+| `WorkingDirectory` | `/opt/arize`                                                  | Sets the working directory for the process. This is where ARIZE looks for local files and writes data. |
+| `ExecStart`        | `/opt/arize/.venv/bin/arize serve --host 0.0.0.0 --port 8000` | The command to start the server. Uses the full path to the `arize` binary inside the virtual environment. |
 | `Restart`          | `on-failure`                                                       | Automatically restarts the service if it exits with a non-zero exit code. Does not restart on clean shutdown (`systemctl stop`). |
 | `RestartSec`       | `5`                                                                | Waits 5 seconds before attempting a restart, preventing rapid restart loops if the service crashes immediately on startup. |
-| `Environment`      | `HOME=/opt/openjarvis`                                             | Sets the `HOME` environment variable so OpenJarvis finds its configuration at `~/.openjarvis/config.toml` (resolving to `/opt/openjarvis/.openjarvis/config.toml`). |
+| `Environment`      | `HOME=/opt/arize`                                             | Sets the `HOME` environment variable so ARIZE finds its configuration at `~/.arize/config.toml` (resolving to `/opt/arize/.arize/config.toml`). |
 
 ### `[Install]` Section
 
@@ -104,7 +104,7 @@ WantedBy=multi-user.target
 Edit the `ExecStart` line to change the host or port:
 
 ```ini
-ExecStart=/opt/openjarvis/.venv/bin/jarvis serve --host 127.0.0.1 --port 9000
+ExecStart=/opt/arize/.venv/bin/arize serve --host 127.0.0.1 --port 9000
 ```
 
 !!! tip
@@ -112,10 +112,10 @@ ExecStart=/opt/openjarvis/.venv/bin/jarvis serve --host 127.0.0.1 --port 9000
 
 ### Setting the Engine and Model
 
-Pass additional flags to `jarvis serve`:
+Pass additional flags to `arize serve`:
 
 ```ini
-ExecStart=/opt/openjarvis/.venv/bin/jarvis serve --host 0.0.0.0 --port 8000 --engine ollama --model qwen3:8b
+ExecStart=/opt/arize/.venv/bin/arize serve --host 0.0.0.0 --port 8000 --engine ollama --model qwen3:8b
 ```
 
 ### Adding Environment Variables
@@ -124,16 +124,16 @@ Add multiple `Environment` directives or use `EnvironmentFile` for complex confi
 
 ```ini
 [Service]
-Environment=HOME=/opt/openjarvis
-Environment=OPENJARVIS_ENGINE_DEFAULT=vllm
-Environment=OPENJARVIS_OLLAMA_HOST=http://localhost:11434
+Environment=HOME=/opt/arize
+Environment=ARIZE_ENGINE_DEFAULT=vllm
+Environment=ARIZE_OLLAMA_HOST=http://localhost:11434
 ```
 
 Or load from a file:
 
 ```ini
 [Service]
-EnvironmentFile=/opt/openjarvis/.env
+EnvironmentFile=/opt/arize/.env
 ```
 
 ### Changing the User
@@ -143,9 +143,9 @@ If you prefer a different service user, update both the `User` directive and the
 ```ini
 [Service]
 User=myuser
-WorkingDirectory=/home/myuser/openjarvis
-ExecStart=/home/myuser/openjarvis/.venv/bin/jarvis serve --host 0.0.0.0 --port 8000
-Environment=HOME=/home/myuser/openjarvis
+WorkingDirectory=/home/myuser/arize
+ExecStart=/home/myuser/arize/.venv/bin/arize serve --host 0.0.0.0 --port 8000
+Environment=HOME=/home/myuser/arize
 ```
 
 ### Using a Configuration File
@@ -153,31 +153,31 @@ Environment=HOME=/home/myuser/openjarvis
 Ensure the configuration file exists at the path where `HOME` points:
 
 ```bash
-sudo -u openjarvis mkdir -p /opt/openjarvis/.openjarvis
-sudo -u openjarvis cp config.toml /opt/openjarvis/.openjarvis/config.toml
+sudo -u arize mkdir -p /opt/arize/.arize
+sudo -u arize cp config.toml /opt/arize/.arize/config.toml
 ```
 
-The server reads `~/.openjarvis/config.toml` on startup, where `~` resolves from the `HOME` environment variable.
+The server reads `~/.arize/config.toml` on startup, where `~` resolves from the `HOME` environment variable.
 
 ## Viewing Logs
 
-OpenJarvis logs are captured by journald. View them with `journalctl`:
+ARIZE logs are captured by journald. View them with `journalctl`:
 
 ```bash
 # View all logs for the service
-sudo journalctl -u openjarvis
+sudo journalctl -u arize
 
 # Follow logs in real time
-sudo journalctl -u openjarvis -f
+sudo journalctl -u arize -f
 
 # View logs since the last boot
-sudo journalctl -u openjarvis -b
+sudo journalctl -u arize -b
 
 # View logs from the last hour
-sudo journalctl -u openjarvis --since "1 hour ago"
+sudo journalctl -u arize --since "1 hour ago"
 
 # View only error-level messages
-sudo journalctl -u openjarvis -p err
+sudo journalctl -u arize -p err
 ```
 
 ## Managing the Service
@@ -186,72 +186,72 @@ sudo journalctl -u openjarvis -p err
 
 ```bash
 # Start the service
-sudo systemctl start openjarvis
+sudo systemctl start arize
 
 # Stop the service
-sudo systemctl stop openjarvis
+sudo systemctl stop arize
 
 # Restart the service (stop + start)
-sudo systemctl restart openjarvis
+sudo systemctl restart arize
 
 # Reload configuration without full restart (sends SIGHUP)
-sudo systemctl reload-or-restart openjarvis
+sudo systemctl reload-or-restart arize
 ```
 
 ### Check Status
 
 ```bash
-sudo systemctl status openjarvis
+sudo systemctl status arize
 ```
 
 Example output:
 
 ```
-● openjarvis.service - OpenJarvis API Server
-     Loaded: loaded (/etc/systemd/system/openjarvis.service; enabled; preset: enabled)
+● arize.service - ARIZE API Server
+     Loaded: loaded (/etc/systemd/system/arize.service; enabled; preset: enabled)
      Active: active (running) since Fri 2026-02-21 10:00:00 UTC; 2h ago
-   Main PID: 12345 (jarvis)
+   Main PID: 12345 (arize)
       Tasks: 4 (limit: 4915)
      Memory: 256.0M
         CPU: 1min 23s
-     CGroup: /system.slice/openjarvis.service
-             └─12345 /opt/openjarvis/.venv/bin/python /opt/openjarvis/.venv/bin/jarvis serve --host 0.0.0.0 --port 8000
+     CGroup: /system.slice/arize.service
+             └─12345 /opt/arize/.venv/bin/python /opt/arize/.venv/bin/arize serve --host 0.0.0.0 --port 8000
 ```
 
 ### Enable and Disable on Boot
 
 ```bash
 # Enable automatic start on boot
-sudo systemctl enable openjarvis
+sudo systemctl enable arize
 
 # Disable automatic start on boot
-sudo systemctl disable openjarvis
+sudo systemctl disable arize
 ```
 
 ### Apply Changes After Editing the Unit File
 
-After modifying `/etc/systemd/system/openjarvis.service`, reload the systemd daemon and restart the service:
+After modifying `/etc/systemd/system/arize.service`, reload the systemd daemon and restart the service:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl restart openjarvis
+sudo systemctl restart arize
 ```
 
 ## Running Alongside Ollama
 
-If Ollama is also managed via systemd, you can add an ordering dependency so the OpenJarvis service waits for Ollama to start:
+If Ollama is also managed via systemd, you can add an ordering dependency so the ARIZE service waits for Ollama to start:
 
 ```ini
 [Unit]
-Description=OpenJarvis API Server
+Description=ARIZE API Server
 After=network.target ollama.service
 Requires=ollama.service
 ```
 
 | Directive  | Description                                                              |
 |------------|--------------------------------------------------------------------------|
-| `After`    | Ensures OpenJarvis starts after Ollama.                                  |
-| `Requires` | If Ollama fails to start, OpenJarvis will not start either.              |
+| `After`    | Ensures ARIZE starts after Ollama.                                  |
+| `Requires` | If Ollama fails to start, ARIZE will not start either.              |
 
 !!! note
-    Use `Wants` instead of `Requires` if you want OpenJarvis to start even when Ollama is unavailable (for example, if you plan to start Ollama manually later).
+    Use `Wants` instead of `Requires` if you want ARIZE to start even when Ollama is unavailable (for example, if you plan to start Ollama manually later).

@@ -6,9 +6,9 @@ import time
 
 import pytest
 
-from openjarvis.core.types import StepType, Trace, TraceStep
-from openjarvis.traces.analyzer import StepTypeStats, TraceAnalyzer
-from openjarvis.traces.store import TraceStore
+from arize.core.types import StepType, Trace, TraceStep
+from arize.traces.analyzer import StepTypeStats, TraceAnalyzer
+from arize.traces.store import TraceStore
 
 
 def _make_trace(steps: list[TraceStep]) -> Trace:

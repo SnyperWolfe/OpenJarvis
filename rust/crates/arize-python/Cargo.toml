@@ -1,0 +1,32 @@
+[package]
+name = "arize-python"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "arize_rust"
+crate-type = ["cdylib"]
+
+[dependencies]
+arize-core = { path = "../arize-core" }
+arize-engine = { path = "../arize-engine" }
+arize-security = { path = "../arize-security" }
+arize-tools = { path = "../arize-tools" }
+arize-agents = { path = "../arize-agents" }
+arize-traces = { path = "../arize-traces" }
+arize-telemetry = { path = "../arize-telemetry" }
+arize-learning = { path = "../arize-learning" }
+arize-mcp = { path = "../arize-mcp" }
+arize-sessions = { path = "../arize-sessions" }
+arize-workflow = { path = "../arize-workflow" }
+arize-skills = { path = "../arize-skills" }
+arize-recipes = { path = "../arize-recipes" }
+arize-templates = { path = "../arize-templates" }
+arize-a2a = { path = "../arize-a2a" }
+arize-scheduler = { path = "../arize-scheduler" }
+pyo3 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+once_cell = { workspace = true }
+parking_lot = { workspace = true }

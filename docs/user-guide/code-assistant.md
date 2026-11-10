@@ -8,12 +8,12 @@ An orchestrator agent with code execution, file I/O, and shell access. It can wr
 
 ```bash
 git clone https://github.com/open-jarvis/OpenJarvis.git
-cd OpenJarvis
+cd ARIZE
 uv sync --extra dev
-jarvis init --preset code-assistant --force
+arize init --preset code-assistant --force
 ```
 
-This writes a pre-configured `~/.openjarvis/config.toml` for the code assistant.
+This writes a pre-configured `~/.arize/config.toml` for the code assistant.
 
 ### 2. Start a local LLM via Ollama
 
@@ -25,7 +25,7 @@ ollama pull qwen3.5:9b
 ### 3. Ask a coding question
 
 ```bash
-jarvis ask "Write a Python script that reads a CSV file and prints the top 5 rows"
+arize ask "Write a Python script that reads a CSV file and prints the top 5 rows"
 ```
 
 The orchestrator agent will plan the approach, write the code, and can execute it if you approve.
@@ -34,27 +34,27 @@ The orchestrator agent will plan the approach, write the code, and can execute i
 
 ```bash
 # Ask a coding question (uses orchestrator agent by default with this config)
-jarvis ask "Write a Python script that parses JSON from stdin"
+arize ask "Write a Python script that parses JSON from stdin"
 
 # Read and explain existing code
-jarvis ask "Read main.py and explain the architecture"
+arize ask "Read main.py and explain the architecture"
 
 # Fix a bug
-jarvis ask "Find and fix the bug in test_utils.py"
+arize ask "Find and fix the bug in test_utils.py"
 
 # Run tests
-jarvis ask "Run the test suite and summarize any failures"
+arize ask "Run the test suite and summarize any failures"
 
 # Explicitly specify agent and tools
-jarvis ask --agent orchestrator --tools code_interpreter "Calculate the first 20 Fibonacci numbers"
+arize ask --agent orchestrator --tools code_interpreter "Calculate the first 20 Fibonacci numbers"
 
 # Interactive chat for iterative coding
-jarvis chat
+arize chat
 ```
 
 ## Configuration Reference
 
-The preset writes this to `~/.openjarvis/config.toml`:
+The preset writes this to `~/.arize/config.toml`:
 
 ```toml
 [engine]
@@ -97,22 +97,22 @@ enabled = ["code_interpreter", "file_read", "file_write", "shell_exec", "web_sea
 
 ```bash
 # Write a new script
-jarvis ask "Write a Python script that converts YAML to JSON"
+arize ask "Write a Python script that converts YAML to JSON"
 
 # Explain existing code
-jarvis ask "Read src/openjarvis/core/events.py and explain the EventBus pattern"
+arize ask "Read src/arize/core/events.py and explain the EventBus pattern"
 
 # Debug a failing test
-jarvis ask "Run pytest tests/test_memory.py -v and fix any failures"
+arize ask "Run pytest tests/test_memory.py -v and fix any failures"
 
 # Refactor code
-jarvis ask "Read utils.py and refactor the parse_config function to use dataclasses"
+arize ask "Read utils.py and refactor the parse_config function to use dataclasses"
 
 # Generate tests
-jarvis ask "Read src/openjarvis/tools/calculator.py and write unit tests for it"
+arize ask "Read src/arize/tools/calculator.py and write unit tests for it"
 
 # Shell tasks
-jarvis ask "Find all Python files larger than 100KB in this repo"
+arize ask "Find all Python files larger than 100KB in this repo"
 ```
 
 ## Safety Notes
@@ -121,8 +121,8 @@ The `shell_exec` and `code_interpreter` tools execute real commands on your mach
 
 - **shell_exec** runs commands in your current user context. It can read, write, and delete files. Avoid running the agent on directories containing sensitive data without reviewing tool calls.
 - **code_interpreter** executes Python code. It has access to your Python environment and installed packages.
-- The agent asks for confirmation before executing potentially destructive commands when running in interactive mode (`jarvis chat`).
-- For stronger isolation, use the sandboxed agent: `jarvis ask --agent sandboxed --tools code_interpreter "..."`, which runs inside a Docker/Podman container.
+- The agent asks for confirmation before executing potentially destructive commands when running in interactive mode (`arize chat`).
+- For stronger isolation, use the sandboxed agent: `arize ask --agent sandboxed --tools code_interpreter "..."`, which runs inside a Docker/Podman container.
 
 ## Troubleshooting
 
@@ -130,7 +130,7 @@ The `shell_exec` and `code_interpreter` tools execute real commands on your mach
 
 **Agent loops without progress** -- Increase `max_turns` if the task is complex, or use a larger model (`qwen3.5:35b`). The 9b model handles most single-file tasks; multi-file refactoring benefits from more parameters.
 
-**Shell command fails** -- The `shell_exec` tool runs commands relative to where you launched `jarvis`. Use `cd /path && command` in your prompt if needed, or run `jarvis` from the project directory.
+**Shell command fails** -- The `shell_exec` tool runs commands relative to where you launched `arize`. Use `cd /path && command` in your prompt if needed, or run `arize` from the project directory.
 
 **Web search not working** -- Install with `uv sync --extra tools-search` and set `TAVILY_API_KEY`.
 

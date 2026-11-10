@@ -6,11 +6,11 @@ import threading
 import time
 from unittest.mock import MagicMock
 
-from openjarvis.agents._stubs import AgentContext
-from openjarvis.agents.orchestrator import OrchestratorAgent
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.types import Conversation, Message, Role, ToolResult
-from openjarvis.tools._stubs import BaseTool, ToolSpec
+from arize.agents._stubs import AgentContext
+from arize.agents.orchestrator import OrchestratorAgent
+from arize.core.events import EventBus, EventType
+from arize.core.types import Conversation, Message, Role, ToolResult
+from arize.tools._stubs import BaseTool, ToolSpec
 
 # ---------------------------------------------------------------------------
 # Helpers

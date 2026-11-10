@@ -1,6 +1,6 @@
 # Interactive CLI model and runtime picker (TUI)
 
-Optional terminal UX for `jarvis chat` and bare `jarvis` on an interactive TTY.
+Optional terminal UX for `arize chat` and bare `arize` on an interactive TTY.
 Upstream previously relied on `default_model` in config or `-m` / `--model` only.
 
 ## Who may find this useful
@@ -26,9 +26,9 @@ On a TTY (unless skipped):
 
 Skip picker:
 
-- `JARVIS_SKIP_MODEL_PICK=1`
-- `jarvis chat` without bare `jarvis` (picker only auto-runs on bare `jarvis` unless `--pick-model`)
-- `jarvis chat --pick-model` forces the list
+- `ARIZE_SKIP_MODEL_PICK=1`
+- `arize chat` without bare `arize` (picker only auto-runs on bare `arize` unless `--pick-model`)
+- `arize chat --pick-model` forces the list
 
 ### Runtime panel (Ollama-focused)
 
@@ -39,7 +39,7 @@ After model selection, optional prompts:
 
 Skip panel:
 
-- `JARVIS_SKIP_RUNTIME_PANEL=1`
+- `ARIZE_SKIP_RUNTIME_PANEL=1`
 - `--skip-runtime-panel`
 - `--num-ctx` / `--num-gpu` (values applied directly, no prompts)
 
@@ -67,6 +67,6 @@ model_code = ""
 
 | Command | Role |
 |---------|------|
-| `jarvis model list` | Inspect models without starting chat |
-| `jarvis chat -m MODEL` | Skip picker, fixed model |
-| `jarvis chat --num-ctx N --num-gpu N` | Skip runtime panel |
+| `arize model list` | Inspect models without starting chat |
+| `arize chat -m MODEL` | Skip picker, fixed model |
+| `arize chat --num-ctx N --num-gpu N` | Skip runtime panel |

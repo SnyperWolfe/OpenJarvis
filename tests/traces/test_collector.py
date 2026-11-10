@@ -6,11 +6,11 @@ import time
 from pathlib import Path
 from typing import Any, Optional
 
-from openjarvis.agents._stubs import AgentContext, AgentResult, BaseAgent
-from openjarvis.core.events import EventBus, EventType
-from openjarvis.core.types import StepType
-from openjarvis.traces.collector import TraceCollector
-from openjarvis.traces.store import TraceStore
+from arize.agents._stubs import AgentContext, AgentResult, BaseAgent
+from arize.core.events import EventBus, EventType
+from arize.core.types import StepType
+from arize.traces.collector import TraceCollector
+from arize.traces.store import TraceStore
 
 
 class _FakeAgent(BaseAgent):
@@ -271,7 +271,7 @@ class _RichToolAgent(BaseAgent):
         context: Optional[AgentContext] = None,
         **kwargs: Any,
     ) -> AgentResult:
-        from openjarvis.core.types import ToolResult
+        from arize.core.types import ToolResult
 
         # Turn 1: inference with tool call request
         self._bus.publish(

@@ -51,7 +51,7 @@ on an Apple silicon Mac. Download the installer artifact from the PR's Actions
 run, then check:
 
 1. Settings → System → About identifies an ARM-based processor.
-2. The installer completes and OpenJarvis launches.
+2. The installer completes and ARIZE launches.
 3. Local setup completes with a small model; chat streams and Stop cancels.
 4. Settings, conversation history, and relaunch work as on the x64 app.
 5. In Task Manager's Details tab, enable the Architecture column: the desktop
@@ -92,7 +92,7 @@ The installer will:
 3. Confirm `git`.
 4. Install `uv` if absent (via the official `astral.sh/uv` PowerShell
    installer).
-5. Clone the repo to `%LOCALAPPDATA%\OpenJarvis\src`.
+5. Clone the repo to `%LOCALAPPDATA%\ARIZE\src`.
 6. Run `uv sync --extra desktop --group desktop-native`.
 7. Prompt to register the scheduled-task service (skip with
    `-SkipService`).
@@ -100,8 +100,8 @@ The installer will:
 ## Run it
 
 ```powershell
-cd "$env:LOCALAPPDATA\OpenJarvis\src"
-uv run jarvis serve
+cd "$env:LOCALAPPDATA\ARIZE\src"
+uv run arize serve
 ```
 
 Open `http://127.0.0.1:8000/health` to verify.
@@ -112,7 +112,7 @@ If you skipped the prompt during install, register the auto-start task
 manually:
 
 ```powershell
-$srv = "$env:LOCALAPPDATA\OpenJarvis\src\deploy\windows\jarvis-service.ps1"
+$srv = "$env:LOCALAPPDATA\ARIZE\src\deploy\windows\arize-service.ps1"
 powershell -ExecutionPolicy Bypass -File $srv install
 ```
 
